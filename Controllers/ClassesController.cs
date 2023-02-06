@@ -213,7 +213,7 @@ public class ClassesController : Controller
 
 		await _context.SaveChangesAsync();
 
-		return RedirectToAction(nameof(ManageEnrollments), new{id = classId});
+		return RedirectToAction(nameof(ManageEnrollments), new{classId = classId});
 	}
 
 	private bool ClassExists(int id)
