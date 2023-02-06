@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagementApp.MVC.Data;
+using SchoolManagementApp.MVC.Models;
 
 namespace SchoolManagementApp.MVC.Controllers;
 public class ClassesController : Controller
@@ -43,8 +44,7 @@ public class ClassesController : Controller
 	// GET: Classes/Create
 	public IActionResult Create()
 	{
-		ViewData["CoursesId"] = new SelectList(_context.Courses, "Id", "Id");
-		ViewData["LecturerId"] = new SelectList(_context.Lecturers, "Id", "Id");
+		CreateSelectLists();
 		return View();
 	}
 
@@ -61,8 +61,7 @@ public class ClassesController : Controller
 			await _context.SaveChangesAsync();
 			return RedirectToAction(nameof(Index));
 		}
-		ViewData["CoursesId"] = new SelectList(_context.Courses, "Id", "Id", qclass.CoursesId);
-		ViewData["LecturerId"] = new SelectList(_context.Lecturers, "Id", "Id", qclass.LecturerId);
+		CreateSelectLists();
 		return View(qclass);
 	}
 
@@ -79,8 +78,7 @@ public class ClassesController : Controller
 		{
 			return NotFound();
 		}
-		ViewData["CoursesId"] = new SelectList(_context.Courses, "Id", "Id", qclass.CoursesId);
-		ViewData["LecturerId"] = new SelectList(_context.Lecturers, "Id", "Id", qclass.LecturerId);
+		CreateSelectLists();
 		return View(qclass);
 	}
 
@@ -116,8 +114,7 @@ public class ClassesController : Controller
 			}
 			return RedirectToAction(nameof(Index));
 		}
-		ViewData["CoursesId"] = new SelectList(_context.Courses, "Id", "Id", qclass.CoursesId);
-		ViewData["LecturerId"] = new SelectList(_context.Lecturers, "Id", "Id", qclass.LecturerId);
+		CreateSelectLists();
 		return View(qclass);
 	}
 
@@ -160,8 +157,84 @@ public class ClassesController : Controller
 		return RedirectToAction(nameof(Index));
 	}
 
+	public async Task<ActionResult> ManageEnrollments(int ClassId)
+	{
+		var @class = await _context.Classes
+			.Include(q => q.Courses)
+			.Include(q => q.Lecturer)
+			.Include(q => q.Enrollments)
+			.ThenInclude(q => q.Student)
+			.FirstOrDefaultAsync(m => m.Id == ClassId);
+
+		var students = await _context.Students.ToListAsync();
+
+		var model = new ClassEnrollmentViewModel();
+		model.Class = new ClassViewModel{
+			Id = @class.Id,
+			CourseName = $"{@class.Courses.Code} - {@class.Courses.Name}",
+			LecturerName = $"{@class.Lecturer.FirstName} {@class.Lecturer.LastName}",
+			Time = @class.Time.ToString()
+		};
+
+		foreach (var student in students)
+		{
+			model.Enrollment.Add(new StudentEnrollmentViewModel{
+				Id = student.Id,
+				FirstName = student.FirstName,
+				LastName = student.LastName,
+				IsEnrolled = (@class?.Enrollments?.Any(q => q.StudentId == student.Id)).GetValueOrDefault()
+			});
+		}
+
+		return View(model);
+	}
+
+	[HttpPost]
+	[ValidateAntiForgeryToken]
+	public async Task<ActionResult> EnrollStudent(int classId,int studentId, bool shouldEnroll){
+		var enrollment = new Enrollment();
+		if (shouldEnroll == true)
+		{
+			enrollment.ClassId = classId;
+			enrollment.StudentId = studentId;
+			await _context.AddAsync(enrollment);
+		}
+		else
+		{
+			enrollment = await _context.Enrollments.FirstOrDefaultAsync(
+				q => q.ClassId == classId && q.StudentId == studentId
+			);
+
+			if (enrollment != null)
+			{
+				_context.Remove(enrollment);
+			}
+		}
+
+		await _context.SaveChangesAsync();
+
+		return RedirectToAction(nameof(ManageEnrollments), new{id = classId});
+	}
+
 	private bool ClassExists(int id)
 	{
 		return (_context.Classes?.Any(e => e.Id == id)).GetValueOrDefault();
+	}
+
+	private void CreateSelectLists()
+	{
+		var courses = _context.Courses.Select(q => new 
+		{
+			CourseName = $"{q.Code} - {q.Name} ({q.Credits} Credits)",
+			q.Id
+		});
+		ViewData["CoursesId"] = new SelectList(courses, "Id", "CourseName");
+		
+		var lecturers = _context.Lecturers.Select(q => new 
+		{
+			FullName = $"{q.FirstName} {q.LastName}",
+			q.Id
+		});
+		ViewData["LecturerId"] = new SelectList(lecturers, "Id", "FullName");
 	}
 }

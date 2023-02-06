@@ -39,7 +39,7 @@
             <td>
                 <a class="btn btn-warning" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a class="btn btn-primary" asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <button type="button" data-id="@item.Id" class="btn btn-danger" id="deleteBtn">Delete</button>
+                <button type="button" data-id="@item.Id" class="btn btn-danger deleteBtn">Delete</button>
             </td>
         </tr>
 }
@@ -57,7 +57,7 @@
         });
 
         $(function(){
-            $('#deleteBtn').click(function(e){
+            $('.deleteBtn').click(function(e){
                 Swal.fire({
                     title: 'Are you sure?',
                     text: "You won't be able to revert this!",

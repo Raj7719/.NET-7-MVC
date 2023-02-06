@@ -31,15 +31,16 @@
                 @Html.DisplayFor(modelItem => item.Time)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Courses.Id)
+                @item.Courses.Code - @item.Courses.Name
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Lecturer.Id)
+                @item.Lecturer.FirstName @item.Lecturer.LastName
             </td>
             <td>
                 <a class="btn btn-warning" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a class="btn btn-primary" asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <button type="button" data-id="@item.Id" class="btn btn-danger deleteBtn">Delete</button>
+                <a  asp-action="ManageEnrollments" class="btn btn-success" asp-route-classId="@item.Id">Manage Enrollments</a>
             </td>
         </tr>
 }
@@ -58,7 +59,7 @@
         });
 
         $(function(){
-            $('#deleteBtn').click(function(e){
+            $('.deleteBtn').click(function(e){
                 Swal.fire({
                     title: 'Are you sure?',
                     text: "You won't be able to revert this!",
