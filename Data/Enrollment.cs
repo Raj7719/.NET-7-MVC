@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace SchoolManagementApp.MVC.Data;
 
-namespace SchoolManagementApp.MVC.Data;
-
-public partial class Enrollment
+public sealed class Enrollment
 {
     public int Id { get; set; }
 
@@ -13,7 +10,7 @@ public partial class Enrollment
 
     public TimeSpan? Time { get; set; }
 
-    public virtual Class? Class { get; set; }
+    public Class? Class { get; set; }
 
-    public virtual Student? Student { get; set; }
+    public Student? Student { get; set; }
 }

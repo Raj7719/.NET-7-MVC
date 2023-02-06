@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace SchoolManagementApp.MVC.Data;
 
-namespace SchoolManagementApp.MVC.Data;
-
-public partial class Student
+public sealed partial class Student
 {
     public int Id { get; set; }
 
@@ -13,5 +10,5 @@ public partial class Student
 
     public DateTime? DateOfBirth { get; set; }
 
-    public virtual ICollection<Enrollment> Enrollments { get; } = new List<Enrollment>();
+    public ICollection<Enrollment> Enrollments { get; } = new List<Enrollment>();
 }

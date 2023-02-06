@@ -16,15 +16,13 @@ public class LecturersController : Controller
 	// GET: Lecturers
 	public async Task<IActionResult> Index()
 	{
-		return _context.Lecturers != null ?
-					View(await _context.Lecturers.ToListAsync()) :
-					Problem("Entity set 'SchoolManagementDbContext.Lecturers'  is null.");
+		return View(await _context.Lecturers.ToListAsync());
 	}
 
 	// GET: Lecturers/Details/5
 	public async Task<IActionResult> Details(int? id)
 	{
-		if (id == null || _context.Lecturers == null)
+		if (id == null)
 		{
 			return NotFound();
 		}
@@ -46,7 +44,7 @@ public class LecturersController : Controller
 	}
 
 	// POST: Lecturers/Create
-	// To protect from overposting attacks, enable the specific properties you want to bind to.
+	// To protect from over-posting attacks, enable the specific properties you want to bind to.
 	// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 	[HttpPost]
 	[ValidateAntiForgeryToken]
@@ -64,7 +62,7 @@ public class LecturersController : Controller
 	// GET: Lecturers/Edit/5
 	public async Task<IActionResult> Edit(int? id)
 	{
-		if (id == null || _context.Lecturers == null)
+		if (id == null)
 		{
 			return NotFound();
 		}
@@ -78,7 +76,7 @@ public class LecturersController : Controller
 	}
 
 	// POST: Lecturers/Edit/5
-	// To protect from overposting attacks, enable the specific properties you want to bind to.
+	// To protect from over-posting attacks, enable the specific properties you want to bind to.
 	// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 	[HttpPost]
 	[ValidateAntiForgeryToken]
@@ -115,7 +113,7 @@ public class LecturersController : Controller
 	// GET: Lecturers/Delete/5
 	public async Task<IActionResult> Delete(int? id)
 	{
-		if (id == null || _context.Lecturers == null)
+		if (id == null)
 		{
 			return NotFound();
 		}
@@ -135,10 +133,6 @@ public class LecturersController : Controller
 	[ValidateAntiForgeryToken]
 	public async Task<IActionResult> DeleteConfirmed(int id)
 	{
-		if (_context.Lecturers == null)
-		{
-			return Problem("Entity set 'SchoolManagementDbContext.Lecturers'  is null.");
-		}
 		var lecturer = await _context.Lecturers.FindAsync(id);
 		if (lecturer != null)
 		{
@@ -151,6 +145,6 @@ public class LecturersController : Controller
 
 	private bool LecturerExists(int id)
 	{
-		return (_context.Lecturers?.Any(e => e.Id == id)).GetValueOrDefault();
+		return (_context.Lecturers.Any(e => e.Id == id));
 	}
 }

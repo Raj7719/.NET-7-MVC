@@ -24,21 +24,21 @@ public class ClassesController : Controller
 	// GET: Classes/Details/5
 	public async Task<IActionResult> Details(int? id)
 	{
-		if (id == null || _context.Classes == null)
+		if (id == null)
 		{
 			return NotFound();
 		}
 
-		var qclass = await _context.Classes
+		var classes = await _context.Classes
 			.Include(q => q.Courses)
 			.Include(q => q.Lecturer)
 			.FirstOrDefaultAsync(m => m.Id == id);
-		if (qclass == null)
+		if (classes == null)
 		{
 			return NotFound();
 		}
 
-		return View(qclass);
+		return View(classes);
 	}
 
 	// GET: Classes/Create
@@ -49,47 +49,47 @@ public class ClassesController : Controller
 	}
 
 	// POST: Classes/Create
-	// To protect from overposting attacks, enable the specific properties you want to bind to.
+	// To protect from over-posting attacks, enable the specific properties you want to bind to.
 	// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 	[HttpPost]
 	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> Create([Bind("Id,LecturerId,CoursesId,Time")] Class qclass)
+	public async Task<IActionResult> Create([Bind("Id,LecturerId,CoursesId,Time")] Class classes)
 	{
 		if (ModelState.IsValid)
 		{
-			_context.Add(qclass);
+			_context.Add(classes);
 			await _context.SaveChangesAsync();
 			return RedirectToAction(nameof(Index));
 		}
 		CreateSelectLists();
-		return View(qclass);
+		return View(classes);
 	}
 
 	// GET: Classes/Edit/5
 	public async Task<IActionResult> Edit(int? id)
 	{
-		if (id == null || _context.Classes == null)
+		if (id == null)
 		{
 			return NotFound();
 		}
 
-		var qclass = await _context.Classes.FindAsync(id);
-		if (qclass == null)
+		var classes = await _context.Classes.FindAsync(id);
+		if (classes == null)
 		{
 			return NotFound();
 		}
 		CreateSelectLists();
-		return View(qclass);
+		return View(classes);
 	}
 
 	// POST: Classes/Edit/5
-	// To protect from overposting attacks, enable the specific properties you want to bind to.
+	// To protect from over-posting attacks, enable the specific properties you want to bind to.
 	// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 	[HttpPost]
 	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> Edit(int id, [Bind("Id,LecturerId,CoursesId,Time")] Class qclass)
+	public async Task<IActionResult> Edit(int id, [Bind("Id,LecturerId,CoursesId,Time")] Class classes)
 	{
-		if (id != qclass.Id)
+		if (id != classes.Id)
 		{
 			return NotFound();
 		}
@@ -98,12 +98,12 @@ public class ClassesController : Controller
 		{
 			try
 			{
-				_context.Update(qclass);
+				_context.Update(classes);
 				await _context.SaveChangesAsync();
 			}
 			catch (DbUpdateConcurrencyException)
 			{
-				if (!ClassExists(qclass.Id))
+				if (!ClassExists(classes.Id))
 				{
 					return NotFound();
 				}
@@ -115,27 +115,27 @@ public class ClassesController : Controller
 			return RedirectToAction(nameof(Index));
 		}
 		CreateSelectLists();
-		return View(qclass);
+		return View(classes);
 	}
 
 	// GET: Classes/Delete/5
 	public async Task<IActionResult> Delete(int? id)
 	{
-		if (id == null || _context.Classes == null)
+		if (id == null)
 		{
 			return NotFound();
 		}
 
-		var qclass = await _context.Classes
+		var classes = await _context.Classes
 			.Include(q => q.Courses)
 			.Include(q => q.Lecturer)
 			.FirstOrDefaultAsync(m => m.Id == id);
-		if (qclass == null)
+		if (classes == null)
 		{
 			return NotFound();
 		}
 
-		return View(qclass);
+		return View(classes);
 	}
 
 	// POST: Classes/Delete/5
@@ -143,37 +143,35 @@ public class ClassesController : Controller
 	[ValidateAntiForgeryToken]
 	public async Task<IActionResult> DeleteConfirmed(int id)
 	{
-		if (_context.Classes == null)
+		var classes = await _context.Classes.FindAsync(id);
+		if (classes != null)
 		{
-			return Problem("Entity set 'SchoolManagementDbContext.Classes'  is null.");
-		}
-		var qclass = await _context.Classes.FindAsync(id);
-		if (qclass != null)
-		{
-			_context.Classes.Remove(qclass);
+			_context.Classes.Remove(classes);
 		}
 
 		await _context.SaveChangesAsync();
 		return RedirectToAction(nameof(Index));
 	}
 
-	public async Task<ActionResult> ManageEnrollments(int ClassId)
+	public async Task<ActionResult> ManageEnrollments(int classId)
 	{
 		var @class = await _context.Classes
 			.Include(q => q.Courses)
 			.Include(q => q.Lecturer)
 			.Include(q => q.Enrollments)
 			.ThenInclude(q => q.Student)
-			.FirstOrDefaultAsync(m => m.Id == ClassId);
+			.FirstOrDefaultAsync(m => m.Id == classId);
 
 		var students = await _context.Students.ToListAsync();
 
-		var model = new ClassEnrollmentViewModel();
-		model.Class = new ClassViewModel{
-			Id = @class.Id,
-			CourseName = $"{@class.Courses.Code} - {@class.Courses.Name}",
-			LecturerName = $"{@class.Lecturer.FirstName} {@class.Lecturer.LastName}",
-			Time = @class.Time.ToString()
+		var model = new ClassEnrollmentViewModel
+		{
+			Class = new ClassViewModel{
+				Id = @class!.Id,
+				CourseName = $"{@class.Courses!.Code} - {@class.Courses.Name}",
+				LecturerName = $"{@class.Lecturer!.FirstName} {@class.Lecturer.LastName}",
+				Time = @class.Time.ToString()
+			}
 		};
 
 		foreach (var student in students)
@@ -193,7 +191,7 @@ public class ClassesController : Controller
 	[ValidateAntiForgeryToken]
 	public async Task<ActionResult> EnrollStudent(int classId,int studentId, bool shouldEnroll){
 		var enrollment = new Enrollment();
-		if (shouldEnroll == true)
+		if (shouldEnroll)
 		{
 			enrollment.ClassId = classId;
 			enrollment.StudentId = studentId;
@@ -213,12 +211,12 @@ public class ClassesController : Controller
 
 		await _context.SaveChangesAsync();
 
-		return RedirectToAction(nameof(ManageEnrollments), new{classId = classId});
+		return RedirectToAction(nameof(ManageEnrollments), new{classId});
 	}
 
 	private bool ClassExists(int id)
 	{
-		return (_context.Classes?.Any(e => e.Id == id)).GetValueOrDefault();
+		return (_context.Classes.Any(e => e.Id == id));
 	}
 
 	private void CreateSelectLists()

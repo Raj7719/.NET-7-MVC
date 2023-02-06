@@ -24,7 +24,7 @@ public class EnrollmentsController : Controller
 	// GET: Enrollments/Details/5
 	public async Task<IActionResult> Details(int? id)
 	{
-		if (id == null || _context.Enrollments == null)
+		if (id == null)
 		{
 			return NotFound();
 		}
@@ -50,7 +50,7 @@ public class EnrollmentsController : Controller
 	}
 
 	// POST: Enrollments/Create
-	// To protect from overposting attacks, enable the specific properties you want to bind to.
+	// To protect from over-posting attacks, enable the specific properties you want to bind to.
 	// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 	[HttpPost]
 	[ValidateAntiForgeryToken]
@@ -70,7 +70,7 @@ public class EnrollmentsController : Controller
 	// GET: Enrollments/Edit/5
 	public async Task<IActionResult> Edit(int? id)
 	{
-		if (id == null || _context.Enrollments == null)
+		if (id == null)
 		{
 			return NotFound();
 		}
@@ -86,7 +86,7 @@ public class EnrollmentsController : Controller
 	}
 
 	// POST: Enrollments/Edit/5
-	// To protect from overposting attacks, enable the specific properties you want to bind to.
+	// To protect from over-posting attacks, enable the specific properties you want to bind to.
 	// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 	[HttpPost]
 	[ValidateAntiForgeryToken]
@@ -125,7 +125,7 @@ public class EnrollmentsController : Controller
 	// GET: Enrollments/Delete/5
 	public async Task<IActionResult> Delete(int? id)
 	{
-		if (id == null || _context.Enrollments == null)
+		if (id == null)
 		{
 			return NotFound();
 		}
@@ -147,10 +147,6 @@ public class EnrollmentsController : Controller
 	[ValidateAntiForgeryToken]
 	public async Task<IActionResult> DeleteConfirmed(int id)
 	{
-		if (_context.Enrollments == null)
-		{
-			return Problem("Entity set 'SchoolManagementDbContext.Enrollments'  is null.");
-		}
 		var enrollment = await _context.Enrollments.FindAsync(id);
 		if (enrollment != null)
 		{
@@ -163,6 +159,6 @@ public class EnrollmentsController : Controller
 
 	private bool EnrollmentExists(int id)
 	{
-		return (_context.Enrollments?.Any(e => e.Id == id)).GetValueOrDefault();
+		return (_context.Enrollments.Any(e => e.Id == id));
 	}
 }

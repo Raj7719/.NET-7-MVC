@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using SchoolManagementApp.MVC.Models;
+// ReSharper disable All
 
 namespace SchoolManagementApp.MVC.Controllers;
 

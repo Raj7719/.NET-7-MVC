@@ -31,10 +31,10 @@
                 @Html.DisplayFor(modelItem => item.Time)
             </td>
             <td>
-                @item.Courses.Code - @item.Courses.Name
+                @item.Courses!.Code - @item.Courses.Name
             </td>
             <td>
-                @item.Lecturer.FirstName @item.Lecturer.LastName
+                @item.Lecturer!.FirstName @item.Lecturer.LastName
             </td>
             <td>
                 <a class="btn btn-warning" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

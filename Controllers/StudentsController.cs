@@ -16,15 +16,13 @@ public class StudentsController : Controller
 	// GET: Students
 	public async Task<IActionResult> Index()
 	{
-		return _context.Students != null ?
-					View(await _context.Students.ToListAsync()) :
-					Problem("Entity set 'SchoolManagementDbContext.Students'  is null.");
+		return View(await _context.Students.ToListAsync());
 	}
 
 	// GET: Students/Details/5
 	public async Task<IActionResult> Details(int? id)
 	{
-		if (id == null || _context.Students == null)
+		if (id == null)
 		{
 			return NotFound();
 		}
@@ -46,7 +44,7 @@ public class StudentsController : Controller
 	}
 
 	// POST: Students/Create
-	// To protect from overposting attacks, enable the specific properties you want to bind to.
+	// To protect from over-posting attacks, enable the specific properties you want to bind to.
 	// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 	[HttpPost]
 	[ValidateAntiForgeryToken]
@@ -64,7 +62,7 @@ public class StudentsController : Controller
 	// GET: Students/Edit/5
 	public async Task<IActionResult> Edit(int? id)
 	{
-		if (id == null || _context.Students == null)
+		if (id == null)
 		{
 			return NotFound();
 		}
@@ -78,7 +76,7 @@ public class StudentsController : Controller
 	}
 
 	// POST: Students/Edit/5
-	// To protect from overposting attacks, enable the specific properties you want to bind to.
+	// To protect from over-posting attacks, enable the specific properties you want to bind to.
 	// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 	[HttpPost]
 	[ValidateAntiForgeryToken]
@@ -115,7 +113,7 @@ public class StudentsController : Controller
 	// GET: Students/Delete/5
 	public async Task<IActionResult> Delete(int? id)
 	{
-		if (id == null || _context.Students == null)
+		if (id == null)
 		{
 			return NotFound();
 		}
@@ -135,10 +133,6 @@ public class StudentsController : Controller
 	[ValidateAntiForgeryToken]
 	public async Task<IActionResult> DeleteConfirmed(int id)
 	{
-		if (_context.Students == null)
-		{
-			return Problem("Entity set 'SchoolManagementDbContext.Students'  is null.");
-		}
 		var student = await _context.Students.FindAsync(id);
 		if (student != null)
 		{
@@ -151,6 +145,6 @@ public class StudentsController : Controller
 
 	private bool StudentExists(int id)
 	{
-		return (_context.Students?.Any(e => e.Id == id)).GetValueOrDefault();
+		return (_context.Students.Any(e => e.Id == id));
 	}
 }

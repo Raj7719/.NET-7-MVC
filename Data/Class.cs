@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace SchoolManagementApp.MVC.Data;
 
-namespace SchoolManagementApp.MVC.Data;
-
-public partial class Class
+public sealed class Class
 {
     public int Id { get; set; }
 
@@ -13,9 +10,9 @@ public partial class Class
 
     public TimeSpan? Time { get; set; }
 
-    public virtual Course? Courses { get; set; }
+    public Course? Courses { get; set; }
 
-    public virtual ICollection<Enrollment> Enrollments { get; } = new List<Enrollment>();
+    public ICollection<Enrollment> Enrollments { get; } = new List<Enrollment>();
 
-    public virtual Lecturer? Lecturer { get; set; }
+    public Lecturer? Lecturer { get; set; }
 }

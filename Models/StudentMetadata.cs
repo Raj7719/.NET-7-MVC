@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
+// ReSharper disable All
 
 namespace SchoolManagementApp.MVC.Data;
 
@@ -16,4 +17,4 @@ public class StudentMetadata
 }
 
 [ModelMetadataType(typeof(StudentMetadata))]
-public partial class Student{}
+public sealed partial class Student{}

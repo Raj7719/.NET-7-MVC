@@ -15,15 +15,13 @@ public class CoursesController : Controller
 	// GET: Courses
 	public async Task<IActionResult> Index()
 	{
-		return _context.Courses != null ?
-					View(await _context.Courses.ToListAsync()) :
-					Problem("Entity set 'SchoolManagementDbContext.Courses'  is null.");
+		return View(await _context.Courses.ToListAsync());
 	}
 
 	// GET: Courses/Details/5
 	public async Task<IActionResult> Details(int? id)
 	{
-		if (id == null || _context.Courses == null)
+		if (id == null)
 		{
 			return NotFound();
 		}
@@ -45,7 +43,7 @@ public class CoursesController : Controller
 	}
 
 	// POST: Courses/Create
-	// To protect from overposting attacks, enable the specific properties you want to bind to.
+	// To protect from over-posting attacks, enable the specific properties you want to bind to.
 	// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 	[HttpPost]
 	[ValidateAntiForgeryToken]
@@ -63,7 +61,7 @@ public class CoursesController : Controller
 	// GET: Courses/Edit/5
 	public async Task<IActionResult> Edit(int? id)
 	{
-		if (id == null || _context.Courses == null)
+		if (id == null)
 		{
 			return NotFound();
 		}
@@ -77,7 +75,7 @@ public class CoursesController : Controller
 	}
 
 	// POST: Courses/Edit/5
-	// To protect from overposting attacks, enable the specific properties you want to bind to.
+	// To protect from over-posting attacks, enable the specific properties you want to bind to.
 	// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 	[HttpPost]
 	[ValidateAntiForgeryToken]
@@ -114,7 +112,7 @@ public class CoursesController : Controller
 	// GET: Courses/Delete/5
 	public async Task<IActionResult> Delete(int? id)
 	{
-		if (id == null || _context.Courses == null)
+		if (id == null)
 		{
 			return NotFound();
 		}
@@ -134,10 +132,6 @@ public class CoursesController : Controller
 	[ValidateAntiForgeryToken]
 	public async Task<IActionResult> DeleteConfirmed(int id)
 	{
-		if (_context.Courses == null)
-		{
-			return Problem("Entity set 'SchoolManagementDbContext.Courses'  is null.");
-		}
 		var course = await _context.Courses.FindAsync(id);
 		if (course != null)
 		{
@@ -150,6 +144,6 @@ public class CoursesController : Controller
 
 	private bool CourseExists(int id)
 	{
-		return (_context.Courses?.Any(e => e.Id == id)).GetValueOrDefault();
+		return (_context.Courses.Any(e => e.Id == id));
 	}
 }
